@@ -838,7 +838,10 @@ function cronToSystemdCalendars(cron: string): string[] {
         for (const domValue of domValues) {
           for (const monthValue of months) {
             for (const dowValue of dowValues) {
-              calendars.push(`${dowValue} *-${monthValue}-${domValue} ${hourValue}:${minuteValue}:00`)
+              // systemd OnCalendar format: [DayOfWeek] Year-Month-Day Hour:Minute:Second
+              // When DayOfWeek is "*", omit it entirely (systemd doesn't accept "* *-...")
+              const dowPart = dowValue === "*" ? "" : `${dowValue} `
+              calendars.push(`${dowPart}*-${monthValue}-${domValue} ${hourValue}:${minuteValue}:00`)
             }
           }
         }
